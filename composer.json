@@ -1,0 +1,37 @@
+{
+    "name": "stephenharris/wp-query-builder",
+    "description": "An expressive query builder for WordPress based on Laravel's Query Builder",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Stephen Harris",
+            "email": "contact@stephenharris.info"
+        }
+    ],
+		"repositories": [
+			{
+				"type": "git",
+				"url": "https://github.com/stephenharris/wp-test-library.git"
+			}
+		],
+		"autoload": {
+			"psr-4": {
+				"WPQueryBuilder\\": "src/"
+			}
+		},
+		"require-dev": {
+			"phpunit/phpunit": "^6",
+			"wp-cli/wp-cli" : "^1.0.0",
+			"stephenharris/wp-test-library" : "*",
+			"phpunit/phpcov": "^4.0.5",
+			"infection/infection": "^0.8.2"
+		},
+		"scripts": {
+			"tests":[
+				"\"vendor/bin/phpunit\" -c phpunit.xml",
+				"\"vendor/bin/phpunit\" -c phpunit.integration.xml",
+				"\"vendor/bin/phpcov\" merge --html .coverage ."
+			]
+		}
+}
