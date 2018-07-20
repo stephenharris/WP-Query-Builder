@@ -157,6 +157,10 @@ class Query{
 		if($columnOrWhereInstance instanceof WhereClause){
 			$this->wheres->andWhere($columnOrWhereInstance);
 		} else {
+			if(func_num_args() == 2){
+				$value = $operator;
+				$operator = WhereClause::EQUALS;
+			}
 			$this->wheres->andWhere(new BasicWhereClause($columnOrWhereInstance, $operator, $value));
 		}
 		return $this;
@@ -169,6 +173,10 @@ class Query{
 	 * @return $this
 	 */
 	public function where($column, $operator = '=', $value = null) {
+		if(func_num_args() == 2){
+			$value = $operator;
+			$operator = WhereClause::EQUALS;
+		}
 		$this->andWhere($column, $operator, $value);
 		return $this;
 	}
@@ -183,6 +191,10 @@ class Query{
 		if($columnOrWhereInstance instanceof WhereClause){
 			$this->wheres->orWhere($columnOrWhereInstance);
 		} else {
+			if(func_num_args() == 2){
+				$value = $operator;
+				$operator = WhereClause::EQUALS;
+			}
 			$this->wheres->orWhere(new BasicWhereClause($columnOrWhereInstance, $operator, $value));
 		}
 		return $this;

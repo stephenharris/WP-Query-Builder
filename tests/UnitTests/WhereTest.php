@@ -41,6 +41,25 @@ final class WhereTest extends TestCase {
 
 	}
 
+	public function testEqualsConciseSyntax(){
+		$qb = new Query($this->wpdbSpy);
+		$qb->select(["field","field2"])
+			->from("tablename")
+			->where("field", 'foobar')
+			->get();
+		$this->assertEquals("SELECT field, field2 FROM tablename WHERE field = 'foobar';", $this->wpdbSpy->getLastInvocation());
+	}
+
+	public function testEqualsAndOrWhereConciseSyntax(){
+		$qb = new Query($this->wpdbSpy);
+		$qb->select(["field","field2"])
+			->from("tablename")
+			->andWhere("field", 'foo')
+			->orWhere("field", 'bar')
+			->get();
+		$this->assertEquals("SELECT field, field2 FROM tablename WHERE field = 'foo' OR field = 'bar';", $this->wpdbSpy->getLastInvocation());
+	}
+
 	/**
 	 * @expectedException \InvalidArgumentException
 	 * @expectedExceptionMessage Invalid operator for WHERE clause. Allowed values are: =, !=, >, <, >=, <=. You gave: 'value'
