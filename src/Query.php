@@ -126,22 +126,22 @@ class Query{
 		}
 	}
 
-	public function leftJoin($table, $firstColumn, $operator, $secondColumn){
+	public function leftJoin($table, $firstColumn, $operator = JoinClause::USING, $secondColumn = null){
 		$this->join(JoinClause::LEFT, $table, $firstColumn, $operator, $secondColumn);
 		return $this;
 	}
 
-	public function rightJoin($table, $firstColumn, $operator, $secondColumn){
+	public function rightJoin($table, $firstColumn, $operator = JoinClause::USING, $secondColumn = null){
 		$this->join(JoinClause::RIGHT, $table, $firstColumn, $operator, $secondColumn);
 		return $this;
 	}
 
-	public function innerJoin($table, $firstColumn, $operator, $secondColumn){
+	public function innerJoin($table, $firstColumn, $operator = JoinClause::USING, $secondColumn = null){
 		$this->join(JoinClause::INNER, $table, $firstColumn, $operator, $secondColumn);
 		return $this;
 	}
 
-	public function fullJoin($table, $firstColumn, $operator, $secondColumn){
+	public function fullJoin($table, $firstColumn, $operator = JoinClause::USING, $secondColumn = null){
 		$this->join(JoinClause::FULL, $table, $firstColumn, $operator, $secondColumn);
 		return $this;
 	}

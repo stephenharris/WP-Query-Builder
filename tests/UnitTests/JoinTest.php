@@ -67,7 +67,7 @@ final class JoinTest extends TestCase {
 
 	/**
 	 * @expectedException \InvalidArgumentException
-	 * @expectedExceptionMessage Invalid operator for ON. Allowed values are: =, !=, >, <, >=, <=. You gave: 'users.ID'
+	 * @expectedExceptionMessage Invalid operator for ON. Allowed values are: =, !=, >, <, >=, <=, USING. You gave: 'users.ID'
 	 */
 	public function testJoinInvalidOperator(){
 		$qb = new Query($this->wpdb);
@@ -100,4 +100,15 @@ final class JoinTest extends TestCase {
 			->get();
 	}
 
+
+	public function testJoinUsing(){
+		$this->wpdb->expects($this->once())->method('get_results')->with(
+			"SELECT * FROM table LEFT JOIN othertable AS o USING commonColumn;"
+		);
+
+		$qb = new Query($this->wpdb);
+		$qb->select()->from("table")
+			->leftJoin('othertable AS o', 'commonColumn')
+			->get();
+	}
 }

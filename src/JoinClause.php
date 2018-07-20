@@ -7,6 +7,7 @@ class JoinClause {
 	const RIGHT = 'RIGHT';
 	const INNER = 'INNER';
 	const FULL = 'FULL';
+	const USING = 'USING';
 
 	private $type = null;
 
@@ -24,7 +25,7 @@ class JoinClause {
 		$this->table = $table;
 	}
 
-	public function on($first, $operator, $second) {
+	public function on($first, $operator = JoinClause::USING, $second = null) {
 		$this->column1 = $first;
 		$this->column2 = $second;
 
@@ -35,10 +36,17 @@ class JoinClause {
 
 
 	public function buildSql() {
-		$parts = [
-			$this->type, "JOIN", $this->table, 'ON', $this->column1,
-			$this->operator, $this->column2
-		];
+		if($this->operator === JoinClause::USING){
+			$parts = [
+				$this->type, "JOIN", $this->table, 'USING', $this->column1
+			];
+		} else {
+			$parts = [
+				$this->type, "JOIN", $this->table, 'ON', $this->column1,
+				$this->operator, $this->column2
+			];
+		}
+
 		return implode(' ', array_filter($parts));
 	}
 
@@ -58,7 +66,8 @@ class JoinClause {
 	private function assertValidOperator($operator){
 		$allowed = [
 			WhereClause::EQUALS, WhereClause::NOTEQUALS, WhereClause::GREATER,
-			WhereClause::LESS, WhereClause::GREATEREQUALS, WhereClause::LESSEQUALS
+			WhereClause::LESS, WhereClause::GREATEREQUALS, WhereClause::LESSEQUALS,
+			JoinClause::USING
 		];
 		if(!in_array($operator, $allowed, true)){
 			throw new \InvalidArgumentException(sprintf(
