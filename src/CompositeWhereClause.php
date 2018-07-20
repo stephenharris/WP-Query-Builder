@@ -10,6 +10,10 @@ class CompositeWhereClause implements WhereClause {
 		//$this->whereClauses = func_get_args();
 	}
 
+	public function isEmpty(){
+		return count($this->whereClauses) === 0;
+	}
+
 	public function andWhere(WhereClause $where){
 		$this->whereClauses[] = ['AND', $where];
 	}

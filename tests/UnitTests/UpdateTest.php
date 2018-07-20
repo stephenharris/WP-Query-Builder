@@ -42,6 +42,64 @@ final class UpdateTest extends TestCase {
 	}
 
 	/**
+	 * @expectedException \BadMethodCallException
+	 * @expectedExceptionMessage No where condition set. Please use updateAll instead.
+	 */
+	public function testUpdateWithoutWhere(){
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")
+			->set([
+				'field1' => 'value',
+				'field2' => 'value2',
+			])
+			->update();
+	}
+
+	/**
+	 * @expectedException \BadMethodCallException
+	 * @expectedExceptionMessage No where condition set. Please use updateAll instead.
+	 */
+	public function testSetValuesUsingUpdateWithoutWhere(){
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")
+			->update([
+				'field1' => 'value',
+				'field2' => 'value2',
+			]);
+	}
+
+
+	public function testUpdateAll(){
+		$this->wpdb->expects($this->once())->method('prepare')->with(
+			"UPDATE tablename SET field1 = %s, field2 = %s;",
+			["value", "value2"]
+		);
+
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")
+			->set([
+				'field1' => 'value',
+				'field2' => 'value2',
+			])
+			->updateAll();
+	}
+
+	public function testUpdateAllUsingUpdateAlll(){
+		$this->wpdb->expects($this->once())->method('prepare')->with(
+			"UPDATE tablename SET field1 = %s, field2 = %s;",
+			["value", "value2"]
+		);
+
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")
+			->updateAll([
+				'field1' => 'value',
+				'field2' => 'value2',
+			]);
+	}
+
+
+	/**
 	 * @expectedException WPQueryBuilder\QueryException
 	 * @expectedExceptionMessage Error in MySql statement...
 	 */

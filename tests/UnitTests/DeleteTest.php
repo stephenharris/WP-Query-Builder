@@ -48,5 +48,21 @@ final class DeleteTest extends TestCase {
 		$qb->where("id", "=", 123)->delete();
 	}
 
+	/**
+	 * @expectedException \BadMethodCallException
+	 * @expectedExceptionMessage No where condition set. Please use deleteAll instead.
+	 */
+	public function testDeleteWithoutSettingWhereConditions(){
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")->delete();
+	}
+
+	public function testDeleteAll(){
+		$this->wpdb->expects($this->once())->method('query')->with("DELETE FROM tablename;");
+
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")
+			->deleteAll();
+	}
 
 }

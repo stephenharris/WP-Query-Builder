@@ -87,7 +87,7 @@ class Query{
 		return $this;
 	}
 
-	public function update($data = null){
+	public function update($data = null, $force = false){
 		$this->type = self::UPDATE;
 
 		if(!is_null($data)){
@@ -100,6 +100,12 @@ class Query{
 			);
 		}
 
+		if(!$force && $this->wheres->isEmpty()){
+			throw new \BadMethodCallException(
+				"No where condition set. Please use updateAll instead."
+			);
+		}
+
 		$sql = $this->buildSqlAndPrepare();
 		$this->db->query($sql);
 
@@ -108,12 +114,22 @@ class Query{
 		}
 	}
 
-	public function delete(){
+	public function updateAll($data = null){
+		$this->update($data, true);
+	}
+
+	public function delete($force = false){
 		$this->type = self::DELETE;
 
 		if(!$this->table){
 			throw new \BadMethodCallException(
 				"No table set. Please call ->table('tablename') before calling ->delete()."
+			);
+		}
+
+		if(!$force && $this->wheres->isEmpty()){
+			throw new \BadMethodCallException(
+				"No where condition set. Please use deleteAll instead."
 			);
 		}
 
@@ -124,6 +140,10 @@ class Query{
 		if(!empty($this->db->last_error)){
 			throw new QueryException($this->db->last_error);
 		}
+	}
+
+	public function deleteAll(){
+		$this->delete(true);
 	}
 
 	public function leftJoin($table, $firstColumn, $operator = JoinClause::USING, $secondColumn = null){
@@ -368,12 +388,12 @@ class Query{
 
 			case self::UPDATE:
 				$sqlParts = ['UPDATE', $this->table, $this->buildSetSQL(), $this->buildWhereSql()];
-				return implode(' ', $sqlParts). ';';
+				return trim(implode(' ', $sqlParts)). ';';
 				break;
 
 			case self::DELETE:
 				$sqlParts = ['DELETE FROM', $this->table, $this->buildWhereSql()];
-				return implode(' ', $sqlParts). ';';
+				return trim(implode(' ', $sqlParts)). ';';
 				break;
 
 			//case self::INSERT is an easy case, handled in ->insert()
