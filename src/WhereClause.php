@@ -10,6 +10,8 @@ interface WhereClause {
 	const LESS = '<';
 	const GREATEREQUALS = '>=';
 	const LESSEQUALS = '<=';
+	const ISNULL = 'IS NULL';
+	const ISNOTNULL = 'IS NOT NULL';
 
 	public function buildSql();
 	public function getBindings();

@@ -212,6 +212,16 @@ class Query{
 		return $this;
 	}
 
+	public function andWhereNull($column) {
+		$this->wheres->andWhere(new NullWhereClause($column,WhereClause::ISNULL));
+		return $this;
+	}
+
+	public function orWhereNull($column) {
+		$this->wheres->orWhere(new NullWhereClause($column,WhereClause::ISNULL));
+		return $this;
+	}
+
 	/**
 	 * @param string $column
 	 * @param array $values

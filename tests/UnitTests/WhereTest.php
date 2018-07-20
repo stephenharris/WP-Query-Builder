@@ -2,6 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use WPQueryBuilder\Query;
 use WPQueryBuilder\WhereClause;
+use WPQueryBuilder\NullWhereClause;
 
 final class WhereTest extends TestCase {
 
@@ -61,15 +62,44 @@ final class WhereTest extends TestCase {
 	}
 
 	/**
-	 * @expectedException \InvalidArgumentException
-	 * @expectedExceptionMessage Invalid operator for WHERE clause. Allowed values are: =, !=, >, <, >=, <=. You gave: 'value'
+	 * @dataProvider whereNullOperatorProvider
 	 */
-	public function testInvalidWhereOperator(){
-		$qb = new Query($this->wpdb);
-		$qb->select()
+	public function testWithWherenNullCondition($operator, $expectedSql){
+		$qb = new Query($this->wpdbSpy);
+		$qb->select(["field","field2"])
 			->from("tablename")
-			->where("field2", "value")
+			->where(new NullWhereClause('field', $operator))
 			->get();
+		$this->assertEquals($expectedSql, $this->wpdbSpy->getLastInvocation());
+	}
+
+	public function whereNullOperatorProvider(){
+		return [
+			['IS NULL',"SELECT field, field2 FROM tablename WHERE field IS NULL;"],
+			[WhereClause::ISNULL,"SELECT field, field2 FROM tablename WHERE field IS NULL;"],
+			['IS NOT NULL',"SELECT field, field2 FROM tablename WHERE field IS NOT NULL;"],
+			[WhereClause::ISNOTNULL,"SELECT field, field2 FROM tablename WHERE field IS NOT NULL;"],
+		];
+
+	}
+
+	public function testWithWhereNullConditionWithoutClass(){
+		$qb = new Query($this->wpdbSpy);
+		$qb->select(["field","field2"])
+			->from("tablename")
+			->andWhereNull("field")
+			->get();
+		$this->assertEquals("SELECT field, field2 FROM tablename WHERE field IS NULL;", $this->wpdbSpy->getLastInvocation());
+	}
+
+	public function testOrNull(){
+		$qb = new Query($this->wpdbSpy);
+		$qb->select(["field","field2"])
+			->from("tablename")
+			->where("field", "=", 5)
+			->orWhereNull("field")
+			->get();
+		$this->assertEquals("SELECT field, field2 FROM tablename WHERE field = 5 OR field IS NULL;", $this->wpdbSpy->getLastInvocation());
 	}
 
 	public function testWithMultipleWhereCondition(){
