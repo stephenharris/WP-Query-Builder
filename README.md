@@ -165,6 +165,59 @@ $qb->select()
 
 ```
 
+
+## Joining
+
+There are four methods for joining:
+
+```
+$query->select(['wp_posts.*', 'u.user_nicename'])
+ ->('wp_posts')
+ ->leftJoin('wp_users as u', 'wp_posts.post_author', '=', 'u.ID');
+
+// SELECT wp_posts.*, u.user_nicename FROM wp_posts LEFT JOIN wp_users as u ON wp_posts.post_author = u.ID;
+```
+
+Methods
+
+- `leftJoin($table, $firstColumn, $operator, $secondColumn)`
+- `rightJoin($table, $firstColumn, $operator, $secondColumn)`
+- `innerJoin($table, $firstColumn, $operator, $secondColumn)`
+- `fullJoin($table, $firstColumn, $operator, $secondColumn)`
+
+
+## Insert records
+
+The `Query::insert` method will insert a record with the given column / values
+(given an array, where the column is the key). You must call `Query::table` with
+the name of the table specified.
+
+```php
+$qb->table("wp_posts")
+	->insert(
+		"post_title" => "My Post Title",
+		"post_content" => "My post content...",
+		"post_status" => "publish",
+	);
+
+// INSERT INTO wp_posts (post_title, post_content, post_status) VALUES ('My Post Title', 'My post content...', 'publish');
+```
+
+## Delete records
+
+The `Query::delete` method will execute a delete command for the table specified,
+via the `Query::table` or `Query::from` command. The `delete` method must be
+called **after** any where conditions, as otherwise you will delete the entire table.
+
+```php
+$qb->table("wp_posts")
+	->where("ID", "=", 123)
+	->delete();
+
+// DELETE FROM wp_posts WHERE ID='123';
+```
+
+
 ## Error handling
 
 Calling a method incorrectly (e.g. calling `Query::get` without first calling
