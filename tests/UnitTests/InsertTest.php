@@ -63,4 +63,23 @@ final class InsertTest extends TestCase {
 		]);
 	}
 
+	public function testInsertNull(){
+		$this->wpdb->expects($this->once())->method('insert')->with(
+			"tablename",
+			[
+				'field1' => null,
+				'field2' => 'value2',
+			]
+		);
+		$this->wpdb->insert_id = 42;
+
+		$qb = new Query($this->wpdb);
+		$id = $qb->table("tablename")->insert([
+			'field1' => null,
+			'field2' => 'value2',
+		]);
+
+		$this->assertEquals(42, $id);
+
+	}
 }

@@ -440,10 +440,16 @@ class Query{
 		}
 
 		$parts = [];
+		$bindings = [];
 		foreach($this->updateFields as $key => $value){
-			$parts[] = "{$key} = %s";
+			if(is_null($value)){
+				$parts[] = "{$key} = NULL";
+			} else {
+				$bindings[] = $value;
+				$parts[] = "{$key} = %s";
+			}
 		}
-		$this->bindings = array_merge($this->bindings, array_values($this->updateFields));
+		$this->bindings = array_merge($this->bindings, $bindings);
 		return 'SET ' . implode(', ', $parts);
 	}
 

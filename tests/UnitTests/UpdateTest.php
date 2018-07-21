@@ -143,4 +143,21 @@ final class UpdateTest extends TestCase {
 		$qb->table('tablename')->where("id", "=", 123)->update();
 	}
 
+
+	public function testUpdateNull(){
+		$this->wpdb->expects($this->once())->method('prepare')->with(
+			"UPDATE tablename SET field1 = %s, field2 = NULL WHERE id = %d;",
+			["value", 123]
+		);
+
+		$qb = new Query($this->wpdb);
+		$qb->table("tablename")
+			->set([
+				'field1' => 'value',
+				'field2' => null,
+			])
+			->where("id", "=", 123)
+			->update();
+
+	}
 }
