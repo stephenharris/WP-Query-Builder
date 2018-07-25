@@ -24,8 +24,7 @@
 			"phpunit/phpunit": "^6",
 			"wp-cli/wp-cli" : "^1.0.0",
 			"stephenharris/wp-test-library" : "*",
-			"phpunit/phpcov": "^4.0.5",
-			"infection/infection": "^0.8.2"
+			"phpunit/phpcov": "^4.0.5"
 		},
 		"scripts": {
 			"tests":[
