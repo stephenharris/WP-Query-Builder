@@ -22,7 +22,7 @@ class Query{
 
 	private $table;
 
-	private $joins;
+	private $joins = [];
 
 	private $wheres;
 
