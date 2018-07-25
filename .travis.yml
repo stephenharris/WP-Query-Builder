@@ -1,0 +1,21 @@
+language: php
+
+sudo: false
+
+dist: precise
+
+php:
+- 7.0
+- 7.1
+- 7.2
+
+install:
+- composer install
+
+before_script:
+- mysql --version
+- php --version
+- phpunit --version
+
+script:
+- vendor/bin/phpunit
