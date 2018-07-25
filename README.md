@@ -2,6 +2,8 @@
 
 An expressive query builder for WordPress based on Laravel's Query Builder. Wraps the `$wpdb` global.
 
+[![Build Status](https://travis-ci.org/stephenharris/WP-Query-Builder.svg?branch=master)](https://travis-ci.org/stephenharris/WP-Query-Builder)
+
 ## How to use in managed environments
 
 If you wish to use this extension in a managed environment, simply install using `composer`:
